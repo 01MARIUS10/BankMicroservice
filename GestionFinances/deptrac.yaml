@@ -1,0 +1,35 @@
+deptrac:
+  paths:
+    - ./app
+
+  layers:
+    - name: Domain
+      collectors:
+        - type: directory
+          value: app/Domain/.*
+
+    - name: Application
+      collectors:
+        - type: directory
+          value: app/Application/.*
+
+    - name: Infrastructure
+      collectors:
+        - type: directory
+          value: app/Infrastructure/.*
+
+    - name: Presentation
+      collectors:
+        - type: directory
+          value: app/Presentation/.*
+
+  ruleset:
+    Application:
+      - Domain
+
+    Infrastructure:
+      - Domain
+
+    Presentation:
+      - Application
+      - Domain

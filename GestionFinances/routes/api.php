@@ -1,7 +1,13 @@
 <?php
 
+use App\Presentation\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/test', function () {
-    return response()->json(['status' => 'ok']);
+Route::get('/test', fn () => response()->json(['status' => 'ok']));
+
+Route::prefix('transactions')->group(function () {
+    Route::get('/', [TransactionController::class, 'index']);
+    Route::post('/', [TransactionController::class, 'store'])->middleware('user.authentication');
+    Route::get('/{id}', [TransactionController::class, 'show'])->middleware('user.authentication');
+    Route::patch('/{id}', [TransactionController::class, 'updateStatus'])->middleware('user.authentication');
 });
