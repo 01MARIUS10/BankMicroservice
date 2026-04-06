@@ -42,14 +42,7 @@ class DatabaseSeeder extends Seeder
                 )
             );
 
-            // if ($data['status'] !== 'pending') {
-            //     $updateStatusAction->execute(
-            //         new UpdateTransactionStatusInput(
-            //             transactionId: $transaction->id,
-            //             status: TransactionStatus::from($data['status']),
-            //         )
-            //     );
-            // }
+
         }
     }
 }

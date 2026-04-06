@@ -1,0 +1,13 @@
+
+docker compose up -d 
+
+docker exec -it gf-app sh    
+php artisan migrate
+
+./vendor/bin/phpunit tests/Unit/Application --testdox
+./vendor/bin/phpunit tests/Feature/TransactionEndpointTest.php --testdox
+
+
+
+
+
