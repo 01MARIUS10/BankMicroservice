@@ -30,13 +30,13 @@ class TransactionEndpointTest extends TestCase
             ->assertJsonPath('data.label', 'Salaire')
             ->assertJsonPath('data.amount', 3500)
             ->assertJsonPath('data.type', 'income')
-            ->assertJsonPath('data.status', 'pending');
+            ->assertJsonPath('data.status', 'PENDING');
 
         $this->assertDatabaseHas('transactions', [
             'label' => 'Salaire',
             'amount' => '3500.00',
             'type' => 'income',
-            'status' => 'pending',
+            'status' => 'PENDING',
             'user_id' => self::USER_ID,
         ]);
     }
@@ -51,7 +51,7 @@ class TransactionEndpointTest extends TestCase
 
         $response->assertStatus(201)
             ->assertJsonPath('data.type', 'outcome')
-            ->assertJsonPath('data.status', 'pending');
+            ->assertJsonPath('data.status', 'PENDING');
     }
 
     public function test_store_returns_401_without_user_id_header(): void
@@ -122,7 +122,7 @@ class TransactionEndpointTest extends TestCase
             'label' => 'Facture',
             'amount' => 85.50,
             'type' => 'outcome',
-            'status' => 'pending',
+            'status' => 'PENDING',
             'user_id' => self::USER_ID,
         ]);
 
@@ -136,7 +136,7 @@ class TransactionEndpointTest extends TestCase
             ->assertJsonPath('data.label', 'Facture')
             ->assertJsonPath('data.amount', 85.5)
             ->assertJsonPath('data.type', 'outcome')
-            ->assertJsonPath('data.status', 'pending');
+            ->assertJsonPath('data.status', 'PENDING');
     }
 
     public function test_show_returns_404_when_not_found(): void
@@ -161,41 +161,24 @@ class TransactionEndpointTest extends TestCase
             'label' => 'Salaire',
             'amount' => 3500.00,
             'type' => 'income',
-            'status' => 'pending',
+            'status' => 'PENDING',
             'user_id' => self::USER_ID,
         ]);
 
         $response = $this->patchJson("/api/transactions/{$txn->id}", [
-            'status' => 'completed',
+            'status' => 'SUCCESS',
         ], ['X-User-Id' => self::USER_ID]);
 
         $response->assertStatus(200)
             ->assertJsonPath('status', 'success')
-            ->assertJsonPath('data.status', 'completed');
+            ->assertJsonPath('data.status', 'SUCCESS');
 
         $this->assertDatabaseHas('transactions', [
             'id' => $txn->id,
-            'status' => 'completed',
+            'status' => 'SUCCESS',
         ]);
     }
 
-    public function test_update_status_from_pending_to_cancelled(): void
-    {
-        $txn = Transaction::create([
-            'label' => 'Test',
-            'amount' => 100.00,
-            'type' => 'income',
-            'status' => 'pending',
-            'user_id' => self::USER_ID,
-        ]);
-
-        $response = $this->patchJson("/api/transactions/{$txn->id}", [
-            'status' => 'cancelled',
-        ], ['X-User-Id' => self::USER_ID]);
-
-        $response->assertStatus(200)
-            ->assertJsonPath('data.status', 'cancelled');
-    }
 
     public function test_update_status_from_pending_to_failed(): void
     {
@@ -203,16 +186,16 @@ class TransactionEndpointTest extends TestCase
             'label' => 'Test',
             'amount' => 100.00,
             'type' => 'income',
-            'status' => 'pending',
+            'status' => 'PENDING',
             'user_id' => self::USER_ID,
         ]);
 
         $response = $this->patchJson("/api/transactions/{$txn->id}", [
-            'status' => 'failed',
+            'status' => 'FAILED',
         ], ['X-User-Id' => self::USER_ID]);
 
         $response->assertStatus(200)
-            ->assertJsonPath('data.status', 'failed');
+            ->assertJsonPath('data.status', 'FAILED');
     }
 
     public function test_update_status_returns_401_without_user_id_header(): void
@@ -221,12 +204,12 @@ class TransactionEndpointTest extends TestCase
             'label' => 'Test',
             'amount' => 100.00,
             'type' => 'income',
-            'status' => 'pending',
+            'status' => 'PENDING',
             'user_id' => self::USER_ID,
         ]);
 
         $response = $this->patchJson("/api/transactions/{$txn->id}", [
-            'status' => 'completed',
+            'status' => 'SUCCESS',
         ]);
 
         $response->assertStatus(401)
@@ -238,7 +221,7 @@ class TransactionEndpointTest extends TestCase
         $fakeId = '00000000-0000-0000-0000-000000000000';
 
         $response = $this->patchJson("/api/transactions/{$fakeId}", [
-            'status' => 'completed',
+            'status' => 'SUCCESS',
         ], ['X-User-Id' => self::USER_ID]);
 
         $response->assertStatus(404)
@@ -251,12 +234,12 @@ class TransactionEndpointTest extends TestCase
             'label' => 'Test',
             'amount' => 100.00,
             'type' => 'income',
-            'status' => 'pending',
+            'status' => 'PENDING',
             'user_id' => self::USER_ID,
         ]);
 
         $response = $this->patchJson("/api/transactions/{$txn->id}", [
-            'status' => 'completed',
+            'status' => 'SUCCESS',
         ], ['X-User-Id' => self::OTHER_USER_ID]);
 
         $response->assertStatus(404)
@@ -269,12 +252,12 @@ class TransactionEndpointTest extends TestCase
             'label' => 'Test',
             'amount' => 100.00,
             'type' => 'income',
-            'status' => 'completed',
+            'status' => 'SUCCESS',
             'user_id' => self::USER_ID,
         ]);
 
         $response = $this->patchJson("/api/transactions/{$txn->id}", [
-            'status' => 'pending',
+            'status' => 'PENDING',
         ], ['X-User-Id' => self::USER_ID]);
 
         $response->assertStatus(400);
@@ -286,7 +269,7 @@ class TransactionEndpointTest extends TestCase
             'label' => 'Test',
             'amount' => 100.00,
             'type' => 'income',
-            'status' => 'pending',
+            'status' => 'PENDING',
             'user_id' => self::USER_ID,
         ]);
 

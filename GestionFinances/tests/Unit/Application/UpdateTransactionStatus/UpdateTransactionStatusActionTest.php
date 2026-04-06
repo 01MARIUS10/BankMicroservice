@@ -64,54 +64,22 @@ class UpdateTransactionStatusActionTest extends TestCase
             amount: 100.00,
             userId: self::USER_ID,
             type: TransactionType::INCOME,
-            status: TransactionStatus::COMPLETED,
+            status: TransactionStatus::SUCCESS,
         );
 
         $this->repository
             ->shouldReceive('updateStatus')
-            ->with(self::TXN_ID, TransactionStatus::COMPLETED)
+            ->with(self::TXN_ID, TransactionStatus::SUCCESS)
             ->once()
             ->andReturn($expected);
 
         $result = $this->action->execute(new UpdateTransactionStatusInput(
             transactionId: self::TXN_ID,
             userId: self::USER_ID,
-            status: TransactionStatus::COMPLETED,
+            status: TransactionStatus::SUCCESS,
         ));
 
-        $this->assertSame(TransactionStatus::COMPLETED, $result->status);
-    }
-
-    public function test_it_transitions_from_pending_to_cancelled(): void
-    {
-        $this->repository
-            ->shouldReceive('findById')
-            ->with(self::TXN_ID)
-            ->once()
-            ->andReturn($this->makePendingTransaction());
-
-        $expected = new TransactionValueObject(
-            id: self::TXN_ID,
-            label: 'Test',
-            amount: 100.00,
-            userId: self::USER_ID,
-            type: TransactionType::INCOME,
-            status: TransactionStatus::CANCELLED,
-        );
-
-        $this->repository
-            ->shouldReceive('updateStatus')
-            ->with(self::TXN_ID, TransactionStatus::CANCELLED)
-            ->once()
-            ->andReturn($expected);
-
-        $result = $this->action->execute(new UpdateTransactionStatusInput(
-            transactionId: self::TXN_ID,
-            userId: self::USER_ID,
-            status: TransactionStatus::CANCELLED,
-        ));
-
-        $this->assertSame(TransactionStatus::CANCELLED, $result->status);
+        $this->assertSame(TransactionStatus::SUCCESS, $result->status);
     }
 
     public function test_it_transitions_from_pending_to_failed(): void
@@ -161,7 +129,7 @@ class UpdateTransactionStatusActionTest extends TestCase
         $this->action->execute(new UpdateTransactionStatusInput(
             transactionId: 'nonexistent-id',
             userId: self::USER_ID,
-            status: TransactionStatus::COMPLETED,
+            status: TransactionStatus::SUCCESS,
         ));
     }
 
@@ -181,7 +149,7 @@ class UpdateTransactionStatusActionTest extends TestCase
         $this->action->execute(new UpdateTransactionStatusInput(
             transactionId: self::TXN_ID,
             userId: self::OTHER_USER_ID,
-            status: TransactionStatus::COMPLETED,
+            status: TransactionStatus::SUCCESS,
         ));
     }
 
@@ -219,16 +187,11 @@ class UpdateTransactionStatusActionTest extends TestCase
     public static function invalidTransitionsProvider(): array
     {
         return [
-            'completed → pending'   => [TransactionStatus::COMPLETED, TransactionStatus::PENDING],
-            'completed → cancelled' => [TransactionStatus::COMPLETED, TransactionStatus::CANCELLED],
-            'completed → failed'    => [TransactionStatus::COMPLETED, TransactionStatus::FAILED],
-            'cancelled → pending'   => [TransactionStatus::CANCELLED, TransactionStatus::PENDING],
-            'cancelled → completed' => [TransactionStatus::CANCELLED, TransactionStatus::COMPLETED],
-            'cancelled → failed'    => [TransactionStatus::CANCELLED, TransactionStatus::FAILED],
-            'failed → pending'      => [TransactionStatus::FAILED, TransactionStatus::PENDING],
-            'failed → completed'    => [TransactionStatus::FAILED, TransactionStatus::COMPLETED],
-            'failed → cancelled'    => [TransactionStatus::FAILED, TransactionStatus::CANCELLED],
-            'pending → pending'     => [TransactionStatus::PENDING, TransactionStatus::PENDING],
+            'PENDING → PENDING'     => [TransactionStatus::PENDING, TransactionStatus::PENDING],
+            'SUCCESS → PENDING'   => [TransactionStatus::SUCCESS, TransactionStatus::PENDING],
+            'SUCCESS → FAILED'    => [TransactionStatus::SUCCESS, TransactionStatus::FAILED],
+            'FAILED → PENDING'      => [TransactionStatus::FAILED, TransactionStatus::PENDING],
+            'FAILED → SUCCESS'    => [TransactionStatus::FAILED, TransactionStatus::SUCCESS],
         ];
     }
 }

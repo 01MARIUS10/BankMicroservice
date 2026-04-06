@@ -22,14 +22,13 @@ class DatabaseSeeder extends Seeder
 
         $userId = "550e8400-e29b-41d4-a716-446655440000"; // Example user ID
         $transactions = [
-            ['user_id'=>$userId,'label' => 'Salaire mensuel',        'amount' => 3500.00, 'type' => 'income',  'status' => 'pending'],
-            ['user_id'=>$userId,'label' => 'Prime annuelle',          'amount' => 1200.00, 'type' => 'income',  'status' => 'completed'],
-            ['user_id'=>$userId,'label' => 'Remboursement annulé',    'amount' => 150.00,  'type' => 'income',  'status' => 'cancelled'],
-            ['user_id'=>$userId,'label' => 'Virement échoué',         'amount' => 500.00,  'type' => 'income',  'status' => 'failed'],
-            ['user_id'=>$userId,'label' => 'Loyer en attente',        'amount' => 900.00,  'type' => 'outcome', 'status' => 'pending'],
-            ['user_id'=>$userId,'label' => 'Facture électricité',     'amount' => 85.50,   'type' => 'outcome', 'status' => 'completed'],
-            ['user_id'=>$userId,'label' => 'Abonnement annulé',       'amount' => 29.99,   'type' => 'outcome', 'status' => 'cancelled'],
-            ['user_id'=>$userId,'label' => 'Paiement refusé',         'amount' => 200.00,  'type' => 'outcome', 'status' => 'failed'],
+            ['user_id'=>$userId,'label' => 'Salaire mensuel',        'amount' => 3500.00, 'type' => 'income',  'status' => 'PENDING'],
+            ['user_id'=>$userId,'label' => 'Prime annuelle',          'amount' => 1200.00, 'type' => 'income',  'status' => 'SUCCESS'],
+            ['user_id'=>$userId,'label' => 'Virement échoué',         'amount' => 500.00,  'type' => 'income',  'status' => 'FAILED'],
+            ['user_id'=>$userId,'label' => 'Loyer en attente',        'amount' => 900.00,  'type' => 'outcome', 'status' => 'PENDING'],
+            ['user_id'=>$userId,'label' => 'Facture électricité',     'amount' => 85.50,   'type' => 'outcome', 'status' => 'SUCCESS'],
+            ['user_id'=>$userId,'label' => 'Abonnement annulé',       'amount' => 29.99,   'type' => 'outcome', 'status' => 'FAILED'],
+            ['user_id'=>$userId,'label' => 'Paiement refusé',         'amount' => 200.00,  'type' => 'outcome', 'status' => 'FAILED'],
         ];
 
         foreach ($transactions as $data) {
