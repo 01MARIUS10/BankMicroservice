@@ -61,7 +61,7 @@ Content-Type: application/json
     "libelle": "Salaire mars",
     "montant": 2500,
     "type": "income",
-    "status": "pending",
+    "status": "PENDING",
     "userId": "user-123"
   }
 }
@@ -112,7 +112,7 @@ X-User-Id: user-123
     "libelle": "Salaire mars",
     "montant": 2500,
     "type": "income",
-    "status": "pending",
+    "status": "PENDING",
     "userId": "user-123"
   }
 }
@@ -142,34 +142,32 @@ Met à jour le statut d'une transaction existante. Seules les transitions de sta
 
 ```json
 {
-  "status": "completed" | "cancelled" | "failed"
+  "status": "SUCCESS"  | "FAILED"
 }
 ```
 
 ### Réponses
 
-| Cas                                              | Code  | Réponse                                                           |
-| ------------------------------------------------ | ----- | ----------------------------------------------------------------- |
-| Statut mis à jour → `completed`                  | `200` | `{ "status": "success", "data": { "status": "completed", ... } }` |
-| Statut mis à jour → `cancelled`                  | `200` | `{ "status": "success", "data": { "status": "cancelled", ... } }` |
-| Statut mis à jour → `failed`                     | `200` | `{ "status": "success", "data": { "status": "failed", ... } }`    |
-| Header `X-User-Id` manquant                      | `401` | `{ "status": "unauthorized" }`                                    |
-| Transaction inexistante                          | `404` | `{ "status": "not_found" }`                                       |
-| Transaction appartenant à un autre utilisateur   | `404` | `{ "status": "not_found" }`                                       |
-| Transition de statut invalide (ex. `pending`)    | `400` | —                                                                 |
-| Valeur de statut invalide (ex. `invalid_status`) | `400` | `{ "status": "validation_error" }`                                |
+| Cas                                              | Code  | Réponse                                                         |
+| ------------------------------------------------ | ----- | --------------------------------------------------------------- |
+| Statut mis à jour → `SUCCESS`                    | `200` | `{ "status": "success", "data": { "status": "SUCCESS", ... } }` |
+| Statut mis à jour → `FAILED`                     | `200` | `{ "status": "success", "data": { "status": "FAILED", ... } }`  |
+| Header `X-User-Id` manquant                      | `401` | `{ "status": "unauthorized" }`                                  |
+| Transaction inexistante                          | `404` | `{ "status": "not_found" }`                                     |
+| Transaction appartenant à un autre utilisateur   | `404` | `{ "status": "not_found" }`                                     |
+| Transition de statut invalide (ex. `PENDING`)    | `400` | —                                                               |
+| Valeur de statut invalide (ex. `invalid_status`) | `400` | `{ "status": "validation_error" }`                              |
 
 > **Note** : Une transaction appartenant à un autre utilisateur retourne `404` (et non `403`) afin de ne pas révéler l'existence de la ressource.
 
 ### Transitions de statut autorisées
 
 ```
-pending ──→ completed
-pending ──→ cancelled
-pending ──→ failed
+PENDING ──→ SUCCESS
+PENDING ──→ FAILED
 ```
 
-Toute autre transition (ex. tenter de repasser en `pending`) est rejetée avec un code `400`.
+Toute autre transition (ex. tenter de repasser en `PENDING`) est rejetée avec un code `400`.
 
 ### Exemple de requête
 
@@ -179,7 +177,7 @@ X-User-Id: user-123
 Content-Type: application/json
 
 {
-  "status": "completed"
+  "status": "SUCCESS"
 }
 ```
 
@@ -193,7 +191,7 @@ Content-Type: application/json
     "libelle": "Salaire mars",
     "montant": 2500,
     "type": "income",
-    "status": "completed",
+    "status": "SUCCESS",
     "userId": "user-123"
   }
 }
